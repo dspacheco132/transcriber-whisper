@@ -1,0 +1,20 @@
+services:
+  transcriber:
+    build: .
+    container_name: transcriber-api
+    ports:
+      - "8484:8484"
+    environment:
+      - WHISPER_MODEL=base
+      - PORT=8484
+    volumes:
+      # Montar diretório para arquivos de áudio (opcional)
+      - ./audio_files:/app/audio_files
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8484/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
