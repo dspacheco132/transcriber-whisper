@@ -106,6 +106,21 @@ result = response.json()
 print(result["text"])
 ```
 
+#### POST `/transcribe-url`
+Transcribes an audio file from a URL (useful for Telegram, N8N, etc.).
+
+**Parameters (JSON body):**
+- `url` (required): URL of the audio file
+- `language` (optional): Language code (e.g., 'pt', 'en', 'es')
+- `task` (optional): 'transcribe' (default) or 'translate'
+
+**Example using curl:**
+```bash
+curl -X POST "http://localhost:8484/transcribe-url" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://api.telegram.org/file/botTOKEN/path/to/file.ogg", "language": "pt"}'
+```
+
 **Example response:**
 ```json
 {
@@ -119,7 +134,7 @@ print(result["text"])
       "text": "Hello, this is an example of audio transcription."
     }
   ],
-  "filename": "audio.mp3"
+  "url": "https://api.telegram.org/file/botTOKEN/path/to/file.ogg"
 }
 ```
 
@@ -143,16 +158,38 @@ environment:
 
 **Note:** Larger models are more accurate but require more memory and are slower.
 
+## 🔗 Integrations
+
+### N8N and Telegram
+
+This API can be easily integrated with N8N workflows to transcribe audio messages from Telegram.
+
+**Quick start:**
+1. **Create Telegram Bot**: See [TELEGRAM_BOT_SETUP.md](TELEGRAM_BOT_SETUP.md) for step-by-step instructions
+2. **Import workflow**: Import `n8n-workflow.json` into N8N
+3. **Configure**: See [N8N_WORKFLOW_SETUP.md](N8N_WORKFLOW_SETUP.md) for import and configuration instructions
+4. **Advanced**: For detailed integration guide, see [N8N_INTEGRATION.md](N8N_INTEGRATION.md)
+
+**Manual setup:**
+1. Configure Telegram trigger in N8N
+2. Get file URL from Telegram API
+3. Call `/transcribe-url` endpoint with the file URL
+4. Send transcription result back to Telegram
+
 ## 📁 Project Structure
 
 ```
 transcriber/
-├── app.py              # Main FastAPI application
-├── requirements.txt    # Python dependencies
-├── Dockerfile          # Docker container configuration
-├── docker-compose.yml  # Docker Compose configuration
-├── .dockerignore       # Files ignored in Docker build
-└── README.md          # This file
+├── app.py                  # Main FastAPI application
+├── requirements.txt        # Python dependencies
+├── Dockerfile              # Docker container configuration
+├── docker-compose.yml      # Docker Compose configuration
+├── .dockerignore           # Files ignored in Docker build
+├── n8n-workflow.json       # Ready-to-use N8N workflow
+├── TELEGRAM_BOT_SETUP.md   # How to create and configure Telegram bot
+├── N8N_WORKFLOW_SETUP.md   # N8N workflow setup guide
+├── N8N_INTEGRATION.md      # N8N and Telegram integration guide
+└── README.md               # This file
 ```
 
 ## 🔧 Troubleshooting
